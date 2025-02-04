@@ -1,0 +1,20 @@
+# Node modules
+node_modules/
+
+# pnpm store
+.pnpm/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Editor specific files
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary files
+pnpm-debug.log*
+pnpm-error.log*
