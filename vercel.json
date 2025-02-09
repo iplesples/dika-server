@@ -12,6 +12,10 @@
         "dest": "src/index.js"
       },
       {
+        "src": "/api/photos",
+        "dest": "src/index.js"
+      },
+      {
         "src": "/gallery/(.*)",
         "dest": "/public/gallery/$1"
       }
