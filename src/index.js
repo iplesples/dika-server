@@ -4,6 +4,7 @@ import multer from 'multer';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
+import dotenv  from 'dotenv';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
