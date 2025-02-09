@@ -6,7 +6,7 @@ import path from 'path';
 import { config } from 'dotenv';
 
 // Tentukan path secara eksplisit
-config({ path: './.env' });
+config ({ path: './.env' });
 
 const app = express();
 const port = process.env.PORT || 3000;
