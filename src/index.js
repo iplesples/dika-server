@@ -1,43 +1,36 @@
-import express from 'express';
+// index.js
+import express from "express";
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
-import { config } from 'dotenv';
-import { fileURLToPath } from 'url';
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import "./config/cloudinary.js"; // Inisialisasi Cloudinary jika diperlukan
 
-// Tentukan path secara eksplisit
-config ({ path: './.env' });
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Middleware untuk parsing JSON dan URL-encoded data
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-// Middleware untuk menyajikan folder publik
-app.use('/gallery', express.static(path.join(__dirname, '../public/gallery')));
+// Koneksi ke MongoDB Atlas
+connectDB();
 
-app.get('/api/photos', (req, res) => {
-  fs.readdir(path.join(__dirname, '../public/gallery'), (err, files) => {
-    if (err) {
-      return res.status(500).json({ error: 'Gagal membaca folder gallery' });
-    }
-    const filePaths = files.map(file => ({
-      name: file,
-      url: `${process.env.BASE_URL || 'http://localhost:3000'}/gallery/${file}`
-    }));
-    res.json(filePaths);
-  });
-});
+// Tes respone
+app.get('/', (req, res) => {
+  res.send('hallo gaes')
+})
 
+// Gunakan product
+app.use("/api/products", productRoutes);
 
+// Daftarkan route admin dengan prefix /api/admin
+app.use("/api/admin", adminRoutes);
 
-// Jalankan server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server berjalan di port ${PORT}`);
 });
