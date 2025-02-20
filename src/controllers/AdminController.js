@@ -6,43 +6,48 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const saltRounds = 10; // Tentukan salt rounds untuk bcrypt
+const saltRounds = parseInt(process.env.BCRYPT_SALT) || 10; // Ambil dari .env atau gunakan default 10
 
-// Endpoint untuk registrasi admin
+// Registrasi Admin
 export const registerAdmin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Cek apakah admin dengan username yang sama sudah ada
+    // Cek apakah username sudah digunakan
     const existingAdmin = await Admin.findOne({ username });
     if (existingAdmin) {
       return res.status(400).json({ message: "Username sudah digunakan." });
     }
 
-    // Hash password sebelum disimpan ke database
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Simpan data admin baru
+    // Simpan admin baru
     const newAdmin = await Admin.create({ username, password: hashedPassword });
-    res.status(201).json({ message: "Admin berhasil didaftarkan.", admin: newAdmin });
+
+    // Jangan kirim password dalam respons
+    res.status(201).json({
+      message: "Admin berhasil didaftarkan.",
+      admin: { id: newAdmin._id, username: newAdmin.username },
+    });
   } catch (error) {
     console.error("Error registrasi admin:", error);
     res.status(500).json({ message: "Terjadi kesalahan di server." });
   }
 };
 
-// Endpoint untuk login admin
+// Login Admin
 export const loginAdmin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Cari admin berdasarkan username
+    // Cek apakah admin ada
     const admin = await Admin.findOne({ username });
     if (!admin) {
       return res.status(401).json({ message: "Kredensial tidak valid." });
     }
 
-    // Bandingkan password yang diinput dengan hash yang tersimpan
+    // Bandingkan password
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Kredensial tidak valid." });
@@ -55,7 +60,7 @@ export const loginAdmin = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({ token });
+    res.json({ token, admin: { id: admin._id, username: admin.username } });
   } catch (error) {
     console.error("Error saat login admin:", error);
     res.status(500).json({ message: "Terjadi kesalahan di server." });
