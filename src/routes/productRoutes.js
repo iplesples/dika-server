@@ -24,7 +24,7 @@ router.post("/create", upload.fields([
       brand,
       description,
       price,
-      color,
+      stock,
       photoDisplay,
       photoDetails,
     });
@@ -100,7 +100,7 @@ router.put("/update/:id", upload.fields([
       brand,
       description,
       price,
-      color,
+      stock,
       ...(photoDisplay && { photoDisplay }),
       ...(photoDetails.length > 0 && { photoDetails }),
     };
