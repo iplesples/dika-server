@@ -10,7 +10,7 @@ router.post("/create", upload.fields([
   { name: "photoDetails", maxCount: 5 },
 ]), async (req, res) => {
   try {
-    const { title, brand, description, price, color } = req.body;
+    const { title, brand, description, price, stock } = req.body;
     
     const photoDisplay = req.files["photoDisplay"] ? req.files["photoDisplay"][0].path : null;
     const photoDetails = req.files["photoDetails"] ? req.files["photoDetails"].map((file) => file.path) : [];
@@ -23,8 +23,8 @@ router.post("/create", upload.fields([
       title,
       brand,
       description,
-      price,
-      stock,
+      price: Number(price),
+      stock:Number(stock),
       photoDisplay,
       photoDetails,
     });
@@ -89,7 +89,7 @@ router.put("/update/:id", upload.fields([
 ]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, brand, description, price, color } = req.body;
+    const { title, brand, description, price, stock } = req.body;
 
     const photoDisplay = req.files["photoDisplay"] ? req.files["photoDisplay"][0].path : null;
     const photoDetails = req.files["photoDetails"] ? req.files["photoDetails"].map((file) => file.path) : [];
@@ -99,8 +99,8 @@ router.put("/update/:id", upload.fields([
       title,
       brand,
       description,
-      price,
-      stock,
+      price: Number(price),
+      stock:Number(stock),
       ...(photoDisplay && { photoDisplay }),
       ...(photoDetails.length > 0 && { photoDetails }),
     };
