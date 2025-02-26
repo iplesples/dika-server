@@ -1,9 +1,0 @@
-import upload from './middleware/multer.js';
-
-// Endpoint untuk upload foto
-app.post('/upload', upload.single('photo'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'Tidak ada file yang diupload' });
-  }
-  res.json({ message: 'Foto berhasil diupload', filePath: `/gallery/${req.file.filename}` });
-});
